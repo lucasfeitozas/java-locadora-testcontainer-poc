@@ -1,0 +1,112 @@
+-- Inserção de dados de exemplo para demonstrar o uso do JSONB
+
+-- Inserir filmes de exemplo
+INSERT INTO filme (id, nome, diretor, ano, detalhes) VALUES 
+(
+    '550e8400-e29b-41d4-a716-446655440001',
+    'O Poderoso Chefão',
+    'Francis Ford Coppola',
+    1972,
+    '{
+        "atores": ["Marlon Brando", "Al Pacino", "James Caan", "Robert Duvall"],
+        "sinopse": "A história da família Corleone, uma das mais poderosas famílias da máfia italiana nos Estados Unidos.",
+        "genero": "Drama",
+        "duracao": 175,
+        "classificacao": "14",
+        "idioma": "Inglês",
+        "pais": "Estados Unidos",
+        "premios": ["Oscar de Melhor Filme", "Oscar de Melhor Roteiro Adaptado", "Oscar de Melhor Ator"],
+        "bilheteria": 245066411,
+        "orcamento": 6000000
+    }'::jsonb
+),
+(
+    '550e8400-e29b-41d4-a716-446655440002',
+    'Pulp Fiction',
+    'Quentin Tarantino',
+    1994,
+    '{
+        "atores": ["John Travolta", "Samuel L. Jackson", "Uma Thurman", "Bruce Willis"],
+        "sinopse": "Histórias entrelaçadas de crime e redenção em Los Angeles.",
+        "genero": "Crime",
+        "duracao": 154,
+        "classificacao": "18",
+        "idioma": "Inglês",
+        "pais": "Estados Unidos",
+        "premios": ["Palma de Ouro", "Oscar de Melhor Roteiro Original"],
+        "bilheteria": 214179088,
+        "orcamento": 8000000
+    }'::jsonb
+),
+(
+    '550e8400-e29b-41d4-a716-446655440003',
+    'Cidade de Deus',
+    'Fernando Meirelles',
+    2002,
+    '{
+        "atores": ["Alexandre Rodrigues", "Leandro Firmino", "Phellipe Haagensen", "Douglas Silva"],
+        "sinopse": "A história de crianças e adolescentes de uma favela carioca onde o tráfico de drogas e a violência fazem parte do cotidiano.",
+        "genero": "Drama",
+        "duracao": 130,
+        "classificacao": "16",
+        "idioma": "Português",
+        "pais": "Brasil",
+        "premios": ["Indicado ao Oscar", "Urso de Ouro"],
+        "bilheteria": 27387381,
+        "orcamento": 3300000
+    }'::jsonb
+);
+
+-- Inserir clientes de exemplo
+INSERT INTO cliente (id, nome, email, telefone, cpf) VALUES 
+(
+    '660e8400-e29b-41d4-a716-446655440001',
+    'João Silva',
+    'joao.silva@email.com',
+    '(11) 99999-1111',
+    '123.456.789-01'
+),
+(
+    '660e8400-e29b-41d4-a716-446655440002',
+    'Maria Santos',
+    'maria.santos@email.com',
+    '(11) 99999-2222',
+    '987.654.321-02'
+),
+(
+    '660e8400-e29b-41d4-a716-446655440003',
+    'Pedro Oliveira',
+    'pedro.oliveira@email.com',
+    '(11) 99999-3333',
+    '456.789.123-03'
+);
+
+-- Inserir locações de exemplo
+INSERT INTO locacao (id, cliente_id, filme_id, data_locacao, data_prevista_devolucao, status, valor_locacao) VALUES 
+(
+    '770e8400-e29b-41d4-a716-446655440001',
+    '660e8400-e29b-41d4-a716-446655440001',
+    '550e8400-e29b-41d4-a716-446655440001',
+    '2024-01-15',
+    '2024-01-22',
+    'ATIVA',
+    15.90
+),
+(
+    '770e8400-e29b-41d4-a716-446655440002',
+    '660e8400-e29b-41d4-a716-446655440002',
+    '550e8400-e29b-41d4-a716-446655440002',
+    '2024-01-10',
+    '2024-01-17',
+    'DEVOLVIDA',
+    12.50
+),
+(
+    '770e8400-e29b-41d4-a716-446655440003',
+    '660e8400-e29b-41d4-a716-446655440003',
+    '550e8400-e29b-41d4-a716-446655440003',
+    '2024-01-20',
+    '2024-01-27',
+    'ATIVA',
+    18.00
+);

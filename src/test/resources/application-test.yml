@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    # Configuração será fornecida pelo Testcontainers via @ServiceConnection
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 10
+      connection-timeout: 300000
+      idle-timeout: 900000
+      max-lifetime: 3600000
+      leak-detection-threshold: 300000
+      validation-timeout: 30000
+      initialization-fail-timeout: 60000
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  
+  sql:
+    init:
+      mode: never
+
+logging:
+  level:
+    org.springframework.jdbc: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.locadora: DEBUG

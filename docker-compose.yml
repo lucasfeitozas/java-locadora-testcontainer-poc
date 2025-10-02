@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  # Banco de dados PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: locadora-postgres
+    environment:
+      POSTGRES_DB: locadora
+      POSTGRES_USER: locadora_user
+      POSTGRES_PASSWORD: locadora_pass
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=pt_BR.UTF-8 --lc-ctype=pt_BR.UTF-8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./src/main/resources/db/migration:/docker-entrypoint-initdb.d
+    networks:
+      - locadora-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U locadora_user -d locadora"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Aplicação Spring Boot
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: locadora-app
+    environment:
+      # Configurações do banco de dados
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/locadora
+      SPRING_DATASOURCE_USERNAME: locadora_user
+      SPRING_DATASOURCE_PASSWORD: locadora_pass
+      
+      # Configurações do Spring
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_JPA_SHOW_SQL: false
+      
+      # Configurações de logging
+      LOGGING_LEVEL_COM_LOCADORA: INFO
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK: WARN
+      
+      # Configurações da aplicação
+      SERVER_PORT: 8080
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,metrics
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - locadora-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+
+  # PgAdmin para administração do banco (opcional)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: locadora-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@locadora.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - locadora-network
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    profiles:
+      - admin
+
+# Volumes para persistência de dados
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+# Rede para comunicação entre containers
+networks:
+  locadora-network:
+    driver: bridge
