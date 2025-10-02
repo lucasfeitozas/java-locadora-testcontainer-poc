@@ -3,9 +3,9 @@ spring:
     name: filme-locadora
   
   datasource:
-    url: jdbc:postgresql://localhost:5432/locadora_db
-    username: locadora_user
-    password: locadora_pass
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/locadora_db}
+    username: ${SPRING_DATASOURCE_USERNAME:locadora_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:locadora_pass}
     driver-class-name: org.postgresql.Driver
     
   flyway:
@@ -20,14 +20,14 @@ spring:
       write-dates-as-timestamps: false
 
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
   servlet:
     context-path: /api
 
 logging:
   level:
-    com.locadora: DEBUG
-    org.springframework.jdbc: DEBUG
+    com.locadora: ${LOGGING_LEVEL_COM_LOCADORA:DEBUG}
+    org.springframework.jdbc: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_JDBC:DEBUG}
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
 
@@ -35,7 +35,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics
+        include: ${MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE:health,info,metrics}
   endpoint:
     health:
       show-details: always

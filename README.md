@@ -163,11 +163,35 @@ mvn test -Dtest=FilmeRepositoryIntegrationTest
 - Maven 3.8+
 - Docker (para testes e execução com containers)
 
+### ⚙️ Configuração de Ambiente
+
+**IMPORTANTE**: Este projeto usa variáveis de ambiente para proteger dados sensíveis como senhas.
+
+#### 1. Configurar Variáveis de Ambiente
+```bash
+# Copiar arquivo de exemplo
+cp .env.example .env
+
+# Editar o arquivo .env com suas configurações
+nano .env  # ou use seu editor preferido
+```
+
+#### 2. Configurar Senhas no arquivo .env
+```bash
+# Exemplo de configuração mínima necessária:
+POSTGRES_PASSWORD=sua_senha_super_secreta_aqui
+PGADMIN_DEFAULT_PASSWORD=sua_senha_pgadmin_aqui
+```
+
 ### Execução Local
 ```bash
 # Clonar o repositório
 git clone git@github.com:lucasfeitozas/java-locadora-testcontainer-poc.git
 cd java-locadora-testcontainer-poc
+
+# Configurar ambiente (OBRIGATÓRIO)
+cp .env.example .env
+# Edite o arquivo .env com suas senhas
 
 # Compilar o projeto
 mvn clean compile
@@ -181,10 +205,24 @@ mvn spring-boot:run
 
 ### Execução com Docker
 ```bash
+# Configurar ambiente (OBRIGATÓRIO)
+cp .env.example .env
+# Edite o arquivo .env com suas senhas
+
 # Construir e executar com docker-compose
 docker-compose up --build
 
 # A aplicação estará disponível em http://localhost:8080
+```
+
+### Execução com PgAdmin (Opcional)
+```bash
+# Executar com PgAdmin para administração do banco
+docker-compose --profile admin up --build
+
+# Acessar PgAdmin em http://localhost:5050
+# Login: admin@locadora.com (ou conforme configurado no .env)
+# Senha: conforme configurado no .env
 ```
 
 ## 📚 API Endpoints
@@ -214,6 +252,41 @@ docker-compose up --build
 - `GET /api/locacoes/{id}` - Buscar locação por ID
 - `POST /api/locacoes` - Criar nova locação
 - `PUT /api/locacoes/{id}/devolver` - Devolver filme
+
+## 🔒 Segurança
+
+### Proteção de Dados Sensíveis
+
+Este projeto implementa as melhores práticas de segurança para proteger dados sensíveis:
+
+#### ✅ Variáveis de Ambiente
+- **Senhas nunca são commitadas** no código
+- Uso de arquivo `.env` para configurações locais
+- Arquivo `.env.example` com exemplos seguros
+- `.env` está no `.gitignore` para prevenir commits acidentais
+
+#### ✅ Configuração Segura
+```bash
+# ❌ NUNCA faça isso:
+POSTGRES_PASSWORD=123456
+
+# ✅ Use senhas fortes:
+POSTGRES_PASSWORD=minha_senha_super_secreta_com_caracteres_especiais_123!@#
+```
+
+#### ✅ Produção
+Para ambientes de produção, considere:
+- **AWS Secrets Manager** ou **Azure Key Vault**
+- **Kubernetes Secrets**
+- **HashiCorp Vault**
+- Rotação automática de senhas
+- Criptografia em trânsito e em repouso
+
+#### ⚠️ Avisos Importantes
+- **NUNCA** commite arquivos `.env` com dados reais
+- **SEMPRE** use senhas diferentes para cada ambiente
+- **REVISE** regularmente as permissões de acesso
+- **MONITORE** logs de acesso e tentativas de login
 
 ## 🐳 Docker
 
